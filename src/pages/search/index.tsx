@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import Back from "../../components/backButton";
 import SearchResult from "../../components/dfSearchResult";
@@ -18,7 +19,11 @@ const PipelineSearch = () => {
     "success" | "no results" | "init"
   >("init");
 
+  const updatedLink = useMemo(() => `https://airtable.com/shrUB5NNy0PGzPjQT?prefill_Company=${searchQuery}`, [searchQuery])
+
+
   const { data: sessionData } = useSession();
+
 
   useHotkeys("meta+enter", () =>
     window.open(
@@ -74,9 +79,13 @@ const PipelineSearch = () => {
 
             {queryResultStatus === "no results" && (
               <div className="mt-4">
-                No results found... press cmd+enter to add {companyName} to the
-                pipeline{" "}
-              </div>
+              No results found... {" "}
+              <Link href={updatedLink} className="underline hover:opacity-70">click here</Link> to add{" "}
+              <span className="font-fold mx-1 rounded-md bg-indigo-600 p-1">
+              &quot;{companyName}&quot;
+              </span>{" "}
+              to the pipeline{" "}
+            </div>
             )}
           </>
         )}
