@@ -3,39 +3,73 @@ import { type NextPage } from "next";
 // import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import Navigation from "../components/navigation";
+import HomeSkeleton from "../components/Skeleton";
 import UniversalSearch from "../components/universalSearch";
+import { trpc } from "../utils/trpc";
 
 // import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
+  const { data: sessionData, status } = useSession();
+  const { data: userData, status: userDataStatus } =
+    trpc.auth.getAuthStatus.useQuery();
 
-  const { data: sessionData } = useSession();
-
-  if (sessionData?.user) {
+  if (status == "loading") {
     return (
-      <main>
-        <div className="my-4 flex items-center justify-between">
-          <h1 className="">Ascension Deaflow</h1>
-          <UniversalSearch />
-        </div>
-        <div>
-          <Navigation />
-        </div>
-      </main>
+      <>
+        <HomeSkeleton />
+      </>
     );
   }
+  if (status == "authenticated") {
+    if (userDataStatus == "loading") {
+      return <></>;
+    } else {
+      if (userData?.authorised) {
+        return (
+          <main>
+            <div className="my-4 flex items-center justify-between">
+              <h1 className="">
+                Ascension Deal Flow
+              </h1>
+              <UniversalSearch />
+            </div>
+            <div>
+              <Navigation />
+            </div>
+          </main>
+        );
+      } else {
+        return (
+          <main>
+            <div className="my-4">
+              <h1>Unauthorised</h1>
+              <p className="mt-2">
+                Please ask your admin to approve your account.
+              </p>
+            </div>
+          </main>
+        );
+      }
+    }
+  }
 
-  return (
-    <div className="">
-      <h1>Ascension Dealflow</h1>
+  if (status == "unauthenticated") {
+    return (
       <div className="mt-4">
-        <div className="mb-2">You are not logged in. Please sign in below.</div>
-        <button onClick={() => signIn()} className={"btn-base"}>
-          Sign in
-        </button>
+        <h1>Ascension Deal Flow</h1>
+        <div className="mt-4">
+          <div className="mb-4">
+            You are not logged in. Please sign in below.
+          </div>
+          <button onClick={() => signIn("google")} className={"btn-base"}>
+            Sign in
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return <>loading...</>;
 };
 
 export default Home;
