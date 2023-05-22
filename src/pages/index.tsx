@@ -23,15 +23,13 @@ const Home: NextPage = () => {
   }
   if (status == "authenticated") {
     if (userDataStatus == "loading") {
-      return <></>;
+      return <HomeSkeleton />;
     } else {
       if (userData?.authorised) {
         return (
           <main>
             <div className="my-4 flex items-center justify-between">
-              <h1 className="">
-                Ascension Deal Flow
-              </h1>
+              <h1 className="">Ascension Deal Flow</h1>
               <UniversalSearch />
             </div>
             <div>
