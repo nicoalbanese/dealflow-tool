@@ -19,11 +19,13 @@ const PipelineSearch = () => {
     "success" | "no results" | "init"
   >("init");
 
-  const updatedLink = useMemo(() => `https://airtable.com/shrUB5NNy0PGzPjQT?prefill_Company=${searchQuery}`, [searchQuery])
-
+  const updatedLink = useMemo(
+    () =>
+      `https://airtable.com/shrUB5NNy0PGzPjQT?prefill_Company=${searchQuery}`,
+    [searchQuery]
+  );
 
   const { data: sessionData } = useSession();
-
 
   useHotkeys("meta+enter", () =>
     window.open(
@@ -45,6 +47,7 @@ const PipelineSearch = () => {
     setSearchQuery(companyName);
     setLoading(true);
     const results = await searchForBusiness(companyName);
+    // /console.log(results);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setQueryResultStatus(results.status);
@@ -79,13 +82,16 @@ const PipelineSearch = () => {
 
             {queryResultStatus === "no results" && (
               <div className="mt-4">
-              No results found... {" "}
-              <Link href={updatedLink} className="underline hover:opacity-70">click here</Link> to add{" "}
-              <span className="font-fold mx-1 rounded-md bg-indigo-600 p-1">
-              &quot;{companyName}&quot;
-              </span>{" "}
-              to the pipeline{" "}
-            </div>
+                No results found...{" "}
+                <Link href={updatedLink} className="underline hover:opacity-70">
+                  click here
+                </Link>{" "}
+                to add{" "}
+                <span className="font-fold mx-1 rounded-md bg-indigo-600 p-1">
+                  &quot;{companyName}&quot;
+                </span>{" "}
+                to the pipeline{" "}
+              </div>
             )}
           </>
         )}

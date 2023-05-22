@@ -48,6 +48,12 @@ export const searchForBusiness = async (name: string) => {
 
 const formatBusiness = (rawBusiness: any) => {
   const fields = rawBusiness.fields;
+  const docsend = fields["Docsend / Deck Link"] ?? null;
+  const deckAttachment = fields["Deck (attachement)"]
+    ? fields["Deck (attachement)"][0].url
+    : null;
+  console.log(deckAttachment);
+  const deck = docsend ?? deckAttachment;
   return {
     name: fields["Company"],
     description: fields["Description"],
@@ -57,7 +63,7 @@ const formatBusiness = (rawBusiness: any) => {
     status: fields["Status"],
     statusChris: fields["Status (Chris)"],
     recordUrl: `https://airtable.com/apptcOM65nkIWJy1l/tblltzjPiwy7gOkKE/viwg63PSZQ8mWWeID/${rawBusiness["id"]}?blocks=hide`,
-    deck: fields["Link to Deck"],
+    deck: deck,
     lastStatusChange: fields["Last Status Change"].error
       ? null
       : fields["Last Status Change"],
@@ -195,7 +201,7 @@ export type TriageCompany = {
   website: string;
   deck: string;
   dateAdded: string;
-  isFirstRound: boolean;
+  companyStage: boolean;
   problem: string;
   description: string;
   id: string;
@@ -229,13 +235,20 @@ export const fetchDF = async (userEmail: string) => {
   //   return data;
 
   const structuredData = data.records.map((company: any): TriageCompany => {
+    const docsend = company.fields["Docsend / Deck Link"] ?? null;
+    const deckAttachment = company.fields["Deck (attachement)"]
+      ? company.fields["Deck (attachement)"][0].url
+      : null;
+    console.log(deckAttachment);
+    const deck = docsend ?? deckAttachment;
+
     return {
       name: company.fields.Company,
       amountRaising: company.fields["Amount Raising"],
       website: company.fields["Website (for extension)"],
-      deck: company.fields["Link to Deck"],
+      deck: deck,
       dateAdded: company.fields["Date Added"],
-      isFirstRound: company.fields["First Round?"],
+      companyStage: company.fields["Stage"],
       problem: company.fields["Problem in Focus"],
       description: company.fields["Description"],
       id: company.id,
@@ -305,4 +318,15 @@ export const getTeamRecordId = async (email: string) => {
   // console.log("user search response -> ", res);
   const data = await res.json();
   return data.records[0].id;
+};
+
+export const getTotalInboundCount = async () => {
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const AIRTABLE_URL = `https://api.airtable.com/v0/apptcOM65nkIWJy1l/Pipeline?view=${encodeURI(
+    "(Quick Triage API 2023)"
+  )}`;
 };

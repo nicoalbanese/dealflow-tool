@@ -123,8 +123,8 @@ const CompanyViewer: React.FC<{ company: TriageCompany }> = ({
             body={"£".concat(company.amountRaising.toLocaleString())}
           />
           <DetailedSection
-            sectionName="First raise?"
-            body={company.isFirstRound.toString()}
+            sectionName="Company Stage"
+            body={company.companyStage.toString()}
           />
 
           <DetailedSection
@@ -135,7 +135,7 @@ const CompanyViewer: React.FC<{ company: TriageCompany }> = ({
         </div>
       </div>
       <div id="middle" className="w-full py-4">
-        {company.deck.includes("https://dl.airtable.com/.attachments") ? (
+        {company.deck.includes("https://v5.airtableusercontent.com/") ? (
           <iframe src={company.deck} width="100%" height="560px"></iframe>
         ) : (
           <div>
