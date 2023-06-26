@@ -9,9 +9,15 @@ import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import { trpc } from "../../utils/trpc";
 import Link from "next/link";
 import type { TriageCompany } from "../../utils/airtable";
+import NotLoggedIn from "../../components/NotLoggedIn";
+import { useSession } from "next-auth/react";
 
 const Triage = () => {
+  const { data: sessionData } = useSession();
   const company = trpc.triage.getAll.useQuery();
+  if (!sessionData?.user) {
+    return <NotLoggedIn />;
+  }
 
   if (company.status === "loading") {
     return <>loading...</>;
