@@ -11,8 +11,8 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const { data: sessionData, status } = useSession();
-  const { data: userData, status: userDataStatus } =
-    trpc.auth.getAuthStatus.useQuery();
+  // const { data: userData, status: userDataStatus } =
+  trpc.auth.getAuthStatus.useQuery();
 
   if (status == "loading") {
     return (
@@ -22,34 +22,17 @@ const Home: NextPage = () => {
     );
   }
   if (status == "authenticated") {
-    if (userDataStatus == "loading") {
-      return <HomeSkeleton />;
-    } else {
-      if (userData?.authorised) {
-        return (
-          <main>
-            <div className="my-4 flex items-center justify-between">
-              <h1 className="">Ascension Deal Flow</h1>
-              <UniversalSearch />
-            </div>
-            <div>
-              <Navigation />
-            </div>
-          </main>
-        );
-      } else {
-        return (
-          <main>
-            <div className="my-4">
-              <h1>Unauthorised</h1>
-              <p className="mt-2">
-                Please ask your admin to approve your account.
-              </p>
-            </div>
-          </main>
-        );
-      }
-    }
+    return (
+      <main>
+        <div className="my-4 flex items-center justify-between">
+          <h1 className="">Ascension Deal Flow</h1>
+          <UniversalSearch />
+        </div>
+        <div>
+          <Navigation />
+        </div>
+      </main>
+    );
   }
 
   if (status == "unauthenticated") {
